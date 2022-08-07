@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\SiswaController;
+use App\Http\Controllers\API\SiswaController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,12 +15,27 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::get('/siswa/get', [SiswaController::class, 'index']);
-Route::post('/siswa/add', [SiswaController::class, 'save']);
-Route::get('/siswa/get/{id}', [SiswaController::class, 'get_by_id']);
-Route::post('/siswa/update/{id}', [SiswaController::class, 'update']);
-Route::post('/siswa/delete/{id}', [SiswaController::class, 'delete']);
+#ROUTE API AUTH PASSPORT
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::post('register',[UserController::class, 'register']);
+Route::post('login',[UserController::class, 'login']);
+
+Route::middleware('auth:api')->group(function () {
+    #user profile
+    Route::get('/profile', [UserController::class, 'profile']);
+
+    #siswa
+    Route::get('/siswa/get', [SiswaController::class, 'index']);
+    Route::get('/siswa', [SiswaController::class, 'index']);
+    Route::post('/siswa/add', [SiswaController::class, 'save']);
+    Route::get('/siswa/get/{id}', [SiswaController::class, 'get_by_id']);
+    Route::post('/siswa/update/{id}', [SiswaController::class, 'update']);
+    Route::post('/siswa/delete/{ids}', [SiswaController::class, 'delete']);
+});
